@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project Minimum | Barkley-Jensen</title>
+<meta name="description" content="Barkley-Jensen Roofing & Restoration project minimum calculator.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Barkley-Jensen Roofing & Restoration">
+<meta property="og:title" content="Project Minimum Calculator | Barkley-Jensen">
+<meta property="og:description" content="Barkley-Jensen Roofing & Restoration">
+<meta property="og:url" content="https://barkleyjenseninvoices-wq.github.io/project-minimum/">
+<meta property="og:image" content="https://barkleyjenseninvoices-wq.github.io/project-minimum/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Project Minimum Calculator | Barkley-Jensen">
+<meta name="twitter:image" content="https://barkleyjenseninvoices-wq.github.io/project-minimum/og-image.png">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="robots" content="noindex,nofollow">
+
+<style>
+:root{--bg:#f4f5f2;--card:#fff;--ink:#16213a;--muted:#5d6676;--line:#dfe2e6;--navy:#202c5e;--accent:#b8322a}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,6vw,64px) 18px;-webkit-font-smoothing:antialiased}
+header{width:100%;max-width:440px;margin-bottom:24px;text-align:center}
+header img{width:220px;height:auto;display:block;margin:0 auto}
+main{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;box-shadow:0 1px 2px rgba(22,33,58,.04),0 8px 28px rgba(22,33,58,.06)}
+h1{font-size:22px;margin:0 0 6px;font-weight:600;letter-spacing:-.01em}
+p.lead{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:8px}
+.field{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;transition:border-color .15s}
+.field:focus-within{border-color:var(--navy)}
+.field span{font-size:20px;color:var(--muted)}
+input{font:inherit;font-size:22px;font-weight:500;border:0;outline:0;width:100%;padding:14px 8px;background:transparent;color:var(--ink);font-variant-numeric:tabular-nums}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+.out{margin-top:22px;background:var(--navy);color:#fff;border-radius:14px;padding:22px 20px}
+.out .k{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.75;font-weight:500}
+.out .v{font-size:clamp(36px,11vw,46px);font-weight:700;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
+.out .tax,.out .tot{display:flex;justify-content:space-between;gap:12px;font-size:14px;font-variant-numeric:tabular-nums}
+.out .tax{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);opacity:.85}
+.out .tot{margin-top:6px;font-weight:600}
+footer{margin-top:22px;font-size:12px;color:var(--muted);max-width:440px;text-align:center;line-height:1.5}
+</style>
+</head>
+<body>
+<header><img src="logo.png" alt="Barkley-Jensen Roofing &amp; Restoration" width="220" height="102"></header>
+<main>
+  <h1>Project Minimum</h1>
+  <p class="lead">Enter the projected job cost. The minimum starts at $750 and rises automatically as you type.</p>
+  <label for="cost">Projected job cost</label>
+  <div class="field"><span>$</span><input id="cost" type="number" inputmode="decimal" min="0" step="1" placeholder="0" autocomplete="off"></div>
+  <div class="out" aria-live="polite">
+    <div class="k">Minimum sale price</div>
+    <div class="v" id="min">$750.00</div>
+    <div class="tax"><span>+ Estimated sales tax (7%)</span><span id="tax">$52.50</span></div>
+    <div class="tot"><span>Estimated total with tax</span><span id="tot">$802.50</span></div>
+  </div>
+</main>
+<footer>Include every direct cost in the projected job cost: materials, labor, measurements, fees and tax on materials.</footer>
+<script>
+(function(){
+  var BASE=750, KEEP=500, OH=0.19, TAX=0.07;
+  var up=function(n){return Math.ceil(n*100-1e-9)/100};
+  var r2=function(n){return Math.round(n*100)/100};
+  var fmt=function(n){return n.toLocaleString('en-US',{style:'currency',currency:'USD'})};
+  var el=document.getElementById('cost');
+  function calc(){
+    var c=Math.max(0,parseFloat(el.value)||0);
+    var m=Math.max(BASE,up((KEEP+c)/(1-OH)));
+    var t=r2(m*TAX);
+    document.getElementById('min').textContent=fmt(m);
+    document.getElementById('tax').textContent=fmt(t);
+    document.getElementById('tot').textContent=fmt(r2(m+t));
+  }
+  el.addEventListener('input',calc); calc();
+})();
+</script>
+</body>
+</html>
