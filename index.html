@@ -37,6 +37,7 @@ label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bot
 input{font:inherit;font-size:22px;font-weight:500;border:0;outline:0;width:100%;padding:14px 8px;background:transparent;color:var(--ink);font-variant-numeric:tabular-nums}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
+.hint{margin:8px 2px 0;font-size:12px;color:var(--muted)}
 .out{margin-top:22px;background:var(--navy);color:#fff;border-radius:14px;padding:22px 20px}
 .out .k{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.75;font-weight:500}
 .out .v{font-size:clamp(36px,11vw,46px);font-weight:700;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
@@ -53,6 +54,9 @@ footer{margin-top:22px;font-size:12px;color:var(--muted);max-width:440px;text-al
   <p class="lead">Enter the projected job cost. The minimum starts at $750 and rises automatically as you type.</p>
   <label for="cost">Projected job cost</label>
   <div class="field"><span>$</span><input id="cost" type="number" inputmode="decimal" min="0" step="1" placeholder="0" autocomplete="off"></div>
+  <label for="comm" style="margin-top:16px">Estimated commission</label>
+  <div class="field"><span>$</span><input id="comm" type="number" inputmode="decimal" min="250" step="1" value="250" autocomplete="off"></div>
+  <p class="hint">Starts at $250. Enter a higher amount to see the price.</p>
   <div class="out" aria-live="polite">
     <div class="k">Minimum sale price</div>
     <div class="v" id="min">$750.00</div>
@@ -63,20 +67,21 @@ footer{margin-top:22px;font-size:12px;color:var(--muted);max-width:440px;text-al
 <footer>Include every direct cost in the projected job cost: materials, labor, measurements, fees and tax on materials.</footer>
 <script>
 (function(){
-  var BASE=750, KEEP=500, OH=0.19, TAX=0.07;
+  var BASE=750, KEEP=500, OH=0.19, TAX=0.07, COMM=250;
   var up=function(n){return Math.ceil(n*100-1e-9)/100};
   var r2=function(n){return Math.round(n*100)/100};
   var fmt=function(n){return n.toLocaleString('en-US',{style:'currency',currency:'USD'})};
-  var el=document.getElementById('cost');
+  var el=document.getElementById('cost'), cm=document.getElementById('comm');
   function calc(){
     var c=Math.max(0,parseFloat(el.value)||0);
-    var m=Math.max(BASE,up((KEEP+c)/(1-OH)));
+    var x=Math.max(0,(parseFloat(cm.value)||COMM)-COMM);
+    var m=up(Math.max(BASE+x/(1-OH),(KEEP+c+x)/(1-OH)));
     var t=r2(m*TAX);
     document.getElementById('min').textContent=fmt(m);
     document.getElementById('tax').textContent=fmt(t);
     document.getElementById('tot').textContent=fmt(r2(m+t));
   }
-  el.addEventListener('input',calc); calc();
+  el.addEventListener('input',calc); cm.addEventListener('input',calc); calc();
 })();
 </script>
 </body>
